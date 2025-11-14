@@ -719,5 +719,15 @@ async function deletePuerto(id) {
     }
 }
 
-// Cargar datos iniciales
-loadClientes();
+// Cargar datos iniciales cuando la página se carga
+window.addEventListener('DOMContentLoaded', () => {
+    // Cargar la primera pestaña (clientes)
+    loadClientes();
+    
+    // Pre-cargar datos para los dropdowns de todas las secciones
+    loadTipoProductoOptions();
+    loadClienteOptions();
+    loadBodegaOptions();
+    loadPuertoOptions();
+    loadPlanEntregaOptions();
+});
