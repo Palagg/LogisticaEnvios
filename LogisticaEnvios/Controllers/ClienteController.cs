@@ -18,11 +18,6 @@ namespace LogisticaEnvios.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
         {
-            if (!_dbContext.Cliente.Any())
-            {
-                return NotFound("No hay clientes disponibles.");
-            }
-
             return await _dbContext.Cliente.ToListAsync();
         }
         //obtener cliente por cedula

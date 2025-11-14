@@ -19,11 +19,6 @@ namespace LogisticaEnvios.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Bodega>>> GetBodegas()
         {
-            if (!_dbContext.Bodega.Any())
-            {
-                return NotFound("No hay bodegas disponibles.");
-            }
-
             return await _dbContext.Bodega.ToListAsync();
         }
 

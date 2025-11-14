@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LogisticaEnvios.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class EnvioMaritimoController : ControllerBase
     {
         private readonly EnvioMaritimoContext _dbContext;
@@ -17,11 +19,6 @@ namespace LogisticaEnvios.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EnvioMaritimo>>> GetEnvioMaritimo()
         {
-            if (!_dbContext.EnvioMaritimo.Any())
-            {
-                return NotFound("No hay envíos marítimos disponibles.");
-            }
-
             return await _dbContext.EnvioMaritimo.ToListAsync();
         }
 

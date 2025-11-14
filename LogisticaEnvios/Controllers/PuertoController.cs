@@ -18,11 +18,6 @@ namespace LogisticaEnvios.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Puerto>>> GetPuertos()
         {
-            if (!_dbContext.Puerto.Any())
-            {
-                return NotFound("No hay puertos disponibles.");
-            }
-
             return await _dbContext.Puerto.ToListAsync();
         }
 

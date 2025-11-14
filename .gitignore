@@ -1,0 +1,82 @@
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Build results
+bin/
+obj/
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+x64/
+x86/
+build/
+bld/
+
+## NuGet
+packages/
+*.nupkg
+*.snupkg
+
+## Visual Studio cache/options
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+## Build Results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## .NET
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+
+## OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+## IDE
+*.swp
+*.swo
+*~
+.idea/
+*.iml

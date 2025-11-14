@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Logística de Envíos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚚 Sistema de Logística de Envíos</h1>
+            <p>Gestión de clientes, envíos terrestres y marítimos</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="showTab('clientes')">Clientes</button>
+            <button class="tab-btn" onclick="showTab('tipo-producto')">Tipo Producto</button>
+            <button class="tab-btn" onclick="showTab('plan-entrega')">Plan Entrega</button>
+            <button class="tab-btn" onclick="showTab('envios-terrestres')">Envíos Terrestres</button>
+            <button class="tab-btn" onclick="showTab('envios-maritimos')">Envíos Marítimos</button>
+            <button class="tab-btn" onclick="showTab('bodegas')">Bodegas</button>
+            <button class="tab-btn" onclick="showTab('puertos')">Puertos</button>
+        </nav>
+
+        <!-- Tab de Clientes -->
+        <div id="clientes" class="tab-content active">
+            <div class="section">
+                <h2>Gestión de Clientes</h2>
+                
+                <div class="form-card">
+                    <h3>Nuevo Cliente</h3>
+                    <form id="clienteForm">
+                        <div class="form-group">
+                            <label>Cédula:</label>
+                            <input type="text" id="clienteCedula" required maxlength="15">
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre:</label>
+                            <input type="text" id="clienteNombre" required maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Dirección:</label>
+                            <input type="text" id="clienteDireccion" maxlength="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="email" id="clienteEmail" maxlength="50">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Cliente</button>
+                    </form>
+                </div>
+
+                <div class="data-card">
+                    <h3>Lista de Clientes</h3>
+                    <button onclick="loadClientes()" class="btn btn-secondary">Actualizar Lista</button>
+                    <div id="clientesList" class="data-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab de Tipo Producto -->
+        <div id="tipo-producto" class="tab-content">
+            <div class="section">
+                <h2>Gestión de Tipos de Producto</h2>
+                
+                <div class="form-card">
+                    <h3>Nuevo Tipo de Producto</h3>
+                    <form id="tipoProductoForm">
+                        <div class="form-group">
+                            <label>Nombre:</label>
+                            <input type="text" id="tipoProductoNombre" required maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Descripción:</label>
+                            <textarea id="tipoProductoDescripcion" maxlength="300" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Tipo</button>
+                    </form>
+                </div>
+
+                <div class="data-card">
+                    <h3>Lista de Tipos de Producto</h3>
+                    <button onclick="loadTiposProducto()" class="btn btn-secondary">Actualizar Lista</button>
+                    <div id="tiposProductoList" class="data-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab de Plan de Entrega -->
+        <div id="plan-entrega" class="tab-content">
+            <div class="section">
+                <h2>Gestión de Planes de Entrega</h2>
+                
+                <div class="form-card">
+                    <h3>Nuevo Plan de Entrega</h3>
+                    <form id="planEntregaForm">
+                        <div class="form-group">
+                            <label>ID Tipo de Producto:</label>
+                            <input type="number" id="planTipoProductoID" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Cantidad:</label>
+                            <input type="number" id="planCantidad" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Registro:</label>
+                            <input type="date" id="planFechaRegistro" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de Entrega:</label>
+                            <input type="date" id="planFechaEntrega" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Precio de Envío:</label>
+                            <input type="number" id="planPrecioEnvio" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Número de Guía:</label>
+                            <input type="number" id="planNumeroGuia" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Cédula del Cliente:</label>
+                            <input type="text" id="planCedulaCliente" required maxlength="15">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Plan</button>
+                    </form>
+                </div>
+
+                <div class="data-card">
+                    <h3>Lista de Planes de Entrega</h3>
+                    <button onclick="loadPlanesEntrega()" class="btn btn-secondary">Actualizar Lista</button>
+                    <div id="planesEntregaList" class="data-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab de Envíos Terrestres -->
+        <div id="envios-terrestres" class="tab-content">
+            <div class="section">
+                <h2>Gestión de Envíos Terrestres</h2>
+                
+                <div class="form-card">
+                    <h3>Nuevo Envío Terrestre</h3>
+                    <form id="envioTerrestreForm">
+                        <div class="form-group">
+                            <label>Placa del Vehículo:</label>
+                            <input type="text" id="placaVehiculo" required maxlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label>ID Bodega de Entrega:</label>
+                            <input type="number" id="bodegaEntregaID" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ID Plan de Entrega:</label>
+                            <input type="number" id="planIDTerrestre" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Envío</button>
+                    </form>
+                </div>
+
+                <div class="data-card">
+                    <h3>Lista de Envíos Terrestres</h3>
+                    <button onclick="loadEnviosTerrestres()" class="btn btn-secondary">Actualizar Lista</button>
+                    <div id="enviosTerrestresList" class="data-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab de Envíos Marítimos -->
+        <div id="envios-maritimos" class="tab-content">
+            <div class="section">
+                <h2>Gestión de Envíos Marítimos</h2>
+                
+                <div class="form-card">
+                    <h3>Nuevo Envío Marítimo</h3>
+                    <form id="envioMaritimoForm">
+                        <div class="form-group">
+                            <label>Número de Flota:</label>
+                            <input type="text" id="numeroFlota" required maxlength="8">
+                        </div>
+                        <div class="form-group">
+                            <label>ID Puerto de Entrega:</label>
+                            <input type="number" id="puertoEntregaID" required>
+                        </div>
+                        <div class="form-group">
+                            <label>ID Plan de Entrega:</label>
+                            <input type="number" id="planIDMaritimo" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Envío</button>
+                    </form>
+                </div>
+
+                <div class="data-card">
+                    <h3>Lista de Envíos Marítimos</h3>
+                    <button onclick="loadEnviosMaritimos()" class="btn btn-secondary">Actualizar Lista</button>
+                    <div id="enviosMaritimosList" class="data-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab de Bodegas -->
+        <div id="bodegas" class="tab-content">
+            <div class="section">
+                <h2>Gestión de Bodegas</h2>
+                
+                <div class="form-card">
+                    <h3>Nueva Bodega</h3>
+                    <form id="bodegaForm">
+                        <div class="form-group">
+                            <label>Ubicación:</label>
+                            <input type="text" id="bodegaUbicacion" required maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Capacidad:</label>
+                            <input type="number" id="bodegaCapacidad" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Bodega</button>
+                    </form>
+                </div>
+
+                <div class="data-card">
+                    <h3>Lista de Bodegas</h3>
+                    <button onclick="loadBodegas()" class="btn btn-secondary">Actualizar Lista</button>
+                    <div id="bodegasList" class="data-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab de Puertos -->
+        <div id="puertos" class="tab-content">
+            <div class="section">
+                <h2>Gestión de Puertos</h2>
+                
+                <div class="form-card">
+                    <h3>Nuevo Puerto</h3>
+                    <form id="puertoForm">
+                        <div class="form-group">
+                            <label>Nombre:</label>
+                            <input type="text" id="puertoNombre" required maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Ubicación:</label>
+                            <input type="text" id="puertoUbicacion" maxlength="100">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Puerto</button>
+                    </form>
+                </div>
+
+                <div class="data-card">
+                    <h3>Lista de Puertos</h3>
+                    <button onclick="loadPuertos()" class="btn btn-secondary">Actualizar Lista</button>
+                    <div id="puertosList" class="data-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

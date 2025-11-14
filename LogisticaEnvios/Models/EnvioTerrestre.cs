@@ -19,7 +19,5 @@ namespace LogisticaEnvios.Models
         [ForeignKey("PlanID")]
         [Required(ErrorMessage = "Se requiere la ID del plan de entrega.")]
         public int PlanID { get; set; }
-        public decimal PrecioNormal { get; set; }
-        public decimal Descuento { get; set; }
     }
 }
