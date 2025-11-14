@@ -273,7 +273,10 @@ async function loadTiposProducto() {
                     <p><strong>Nombre:</strong> ${tipo.nombre}</p>
                     <p><strong>Descripción:</strong> ${tipo.descripcion || 'N/A'}</p>
                 </div>
-                <button class="btn btn-danger" onclick="deleteTipoProducto(${tipo.tipoProductoID})">Eliminar</button>
+                <div class="data-item-actions">
+                    <button class="btn btn-edit" onclick="editTipoProducto(${tipo.tipoProductoID})">Editar</button>
+                    <button class="btn btn-danger" onclick="deleteTipoProducto(${tipo.tipoProductoID})">Eliminar</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
@@ -326,6 +329,105 @@ async function deleteTipoProducto(id) {
     } catch (error) {
         showNotification('Error: ' + error.message, 'error');
     }
+}
+
+async function editTipoProducto(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/TipoProducto/${id}`);
+        const tipo = await response.json();
+        
+        document.getElementById('tipoProductoNombre').value = tipo.nombre;
+        document.getElementById('tipoProductoDescripcion').value = tipo.descripcion || '';
+        
+        const form = document.getElementById('tipoProductoForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = 'Actualizar Tipo';
+        submitBtn.classList.add('btn-update');
+        
+        let cancelBtn = form.querySelector('.btn-cancel');
+        if (!cancelBtn) {
+            cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.className = 'btn btn-cancel';
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.onclick = () => cancelEditTipoProducto();
+            submitBtn.parentNode.appendChild(cancelBtn);
+        }
+        
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            await updateTipoProducto(id);
+        };
+        
+        form.scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+        showNotification('Error al cargar tipo de producto: ' + error.message, 'error');
+    }
+}
+
+async function updateTipoProducto(id) {
+    const tipo = {
+        tipoProductoID: id,
+        nombre: document.getElementById('tipoProductoNombre').value,
+        descripcion: document.getElementById('tipoProductoDescripcion').value
+    };
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/TipoProducto/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(tipo)
+        });
+        
+        if (response.ok) {
+            showNotification('Tipo de producto actualizado exitosamente');
+            cancelEditTipoProducto();
+            loadTiposProducto();
+            loadTipoProductoOptions();
+        } else {
+            const error = await response.text();
+            showNotification('Error: ' + error, 'error');
+        }
+    } catch (error) {
+        showNotification('Error al actualizar: ' + error.message, 'error');
+    }
+}
+
+function cancelEditTipoProducto() {
+    const form = document.getElementById('tipoProductoForm');
+    form.reset();
+    
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.textContent = 'Agregar Tipo';
+    submitBtn.classList.remove('btn-update');
+    
+    const cancelBtn = form.querySelector('.btn-cancel');
+    if (cancelBtn) cancelBtn.remove();
+    
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const tipo = {
+            nombre: document.getElementById('tipoProductoNombre').value,
+            descripcion: document.getElementById('tipoProductoDescripcion').value
+        };
+        try {
+            const response = await fetch(`${API_BASE_URL}/TipoProducto`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(tipo)
+            });
+            if (response.ok) {
+                showNotification('Tipo de producto agregado exitosamente');
+                e.target.reset();
+                loadTiposProducto();
+            } else {
+                const error = await response.text();
+                showNotification('Error: ' + error, 'error');
+            }
+        } catch (error) {
+            showNotification('Error al agregar tipo de producto: ' + error.message, 'error');
+        }
+    };
 }
 
 // ===== FUNCIONES AUXILIARES PARA CARGAR DROPDOWNS =====
@@ -452,7 +554,10 @@ async function loadPlanesEntrega() {
                     <p><strong>Número Guía:</strong> ${plan.numeroGuia}</p>
                     <p><strong>Cliente:</strong> ${plan.clienteCedula}</p>
                 </div>
-                <button class="btn btn-danger" onclick="deletePlanEntrega(${plan.planID})">Eliminar</button>
+                <div class="data-item-actions">
+                    <button class="btn btn-edit" onclick="editPlanEntrega(${plan.planID})">Editar</button>
+                    <button class="btn btn-danger" onclick="deletePlanEntrega(${plan.planID})">Eliminar</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
@@ -543,7 +648,10 @@ async function loadEnviosTerrestres() {
                     <p><strong>Bodega ID:</strong> ${envio.bodegaEntregaID}</p>
                     <p><strong>Plan ID:</strong> ${envio.planID}</p>
                 </div>
-                <button class="btn btn-danger" onclick="deleteEnvioTerrestre(${envio.envioTerrestreID})">Eliminar</button>
+                <div class="data-item-actions">
+                    <button class="btn btn-edit" onclick="editEnvioTerrestre(${envio.envioTerrestreID})">Editar</button>
+                    <button class="btn btn-danger" onclick="deleteEnvioTerrestre(${envio.envioTerrestreID})">Eliminar</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
@@ -630,7 +738,10 @@ async function loadEnviosMaritimos() {
                     <p><strong>Puerto:</strong> ${envio.puertoEntregaID}</p>
                     <p><strong>Plan:</strong> ${envio.planID}</p>
                 </div>
-                <button class="btn btn-danger" onclick="deleteEnvioMaritimo(${envio.envioMaritimoID})">Eliminar</button>
+                <div class="data-item-actions">
+                    <button class="btn btn-edit" onclick="editEnvioMaritimo(${envio.envioMaritimoID})">Editar</button>
+                    <button class="btn btn-danger" onclick="deleteEnvioMaritimo(${envio.envioMaritimoID})">Eliminar</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
@@ -706,7 +817,10 @@ async function loadBodegas() {
                     <p><strong>Ubicación:</strong> ${bodega.ubicacion}</p>
                     <p><strong>Capacidad:</strong> ${bodega.capacidad}</p>
                 </div>
-                <button class="btn btn-danger" onclick="deleteBodega(${bodega.bodegaID})">Eliminar</button>
+                <div class="data-item-actions">
+                    <button class="btn btn-edit" onclick="editBodega(${bodega.bodegaID})">Editar</button>
+                    <button class="btn btn-danger" onclick="deleteBodega(${bodega.bodegaID})">Eliminar</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
@@ -761,6 +875,102 @@ async function deleteBodega(id) {
     }
 }
 
+async function editBodega(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/Bodega/${id}`);
+        const bodega = await response.json();
+        
+        document.getElementById('bodegaUbicacion').value = bodega.ubicacion;
+        document.getElementById('bodegaCapacidad').value = bodega.capacidad;
+        
+        const form = document.getElementById('bodegaForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = 'Actualizar Bodega';
+        submitBtn.classList.add('btn-update');
+        
+        let cancelBtn = form.querySelector('.btn-cancel');
+        if (!cancelBtn) {
+            cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.className = 'btn btn-cancel';
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.onclick = () => cancelEditBodega();
+            submitBtn.parentNode.appendChild(cancelBtn);
+        }
+        
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            await updateBodega(id);
+        };
+        
+        form.scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+async function updateBodega(id) {
+    const bodega = {
+        bodegaID: id,
+        ubicacion: document.getElementById('bodegaUbicacion').value,
+        capacidad: parseInt(document.getElementById('bodegaCapacidad').value)
+    };
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/Bodega/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bodega)
+        });
+        
+        if (response.ok) {
+            showNotification('Bodega actualizada exitosamente');
+            cancelEditBodega();
+            loadBodegas();
+            loadBodegaOptions();
+        } else {
+            const error = await response.text();
+            showNotification('Error: ' + error, 'error');
+        }
+    } catch (error) {
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+function cancelEditBodega() {
+    const form = document.getElementById('bodegaForm');
+    form.reset();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.textContent = 'Agregar Bodega';
+    submitBtn.classList.remove('btn-update');
+    const cancelBtn = form.querySelector('.btn-cancel');
+    if (cancelBtn) cancelBtn.remove();
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const bodega = {
+            ubicacion: document.getElementById('bodegaUbicacion').value,
+            capacidad: parseInt(document.getElementById('bodegaCapacidad').value)
+        };
+        try {
+            const response = await fetch(`${API_BASE_URL}/Bodega`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bodega)
+            });
+            if (response.ok) {
+                showNotification('Bodega agregada exitosamente');
+                e.target.reset();
+                loadBodegas();
+            } else {
+                const error = await response.text();
+                showNotification('Error: ' + error, 'error');
+            }
+        } catch (error) {
+            showNotification('Error al agregar bodega: ' + error.message, 'error');
+        }
+    };
+}
+
 // ===== PUERTOS =====
 async function loadPuertos() {
     try {
@@ -781,7 +991,10 @@ async function loadPuertos() {
                     <p><strong>Nombre:</strong> ${puerto.nombre}</p>
                     <p><strong>Ubicación:</strong> ${puerto.ubicacion || 'N/A'}</p>
                 </div>
-                <button class="btn btn-danger" onclick="deletePuerto(${puerto.puertoID})">Eliminar</button>
+                <div class="data-item-actions">
+                    <button class="btn btn-edit" onclick="editPuerto(${puerto.puertoID})">Editar</button>
+                    <button class="btn btn-danger" onclick="deletePuerto(${puerto.puertoID})">Eliminar</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
@@ -836,6 +1049,102 @@ async function deletePuerto(id) {
     }
 }
 
+async function editPuerto(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/Puerto/${id}`);
+        const puerto = await response.json();
+        
+        document.getElementById('puertoNombre').value = puerto.nombre;
+        document.getElementById('puertoUbicacion').value = puerto.ubicacion || '';
+        
+        const form = document.getElementById('puertoForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = 'Actualizar Puerto';
+        submitBtn.classList.add('btn-update');
+        
+        let cancelBtn = form.querySelector('.btn-cancel');
+        if (!cancelBtn) {
+            cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.className = 'btn btn-cancel';
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.onclick = () => cancelEditPuerto();
+            submitBtn.parentNode.appendChild(cancelBtn);
+        }
+        
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            await updatePuerto(id);
+        };
+        
+        form.scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+async function updatePuerto(id) {
+    const puerto = {
+        puertoID: id,
+        nombre: document.getElementById('puertoNombre').value,
+        ubicacion: document.getElementById('puertoUbicacion').value
+    };
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/Puerto/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(puerto)
+        });
+        
+        if (response.ok) {
+            showNotification('Puerto actualizado exitosamente');
+            cancelEditPuerto();
+            loadPuertos();
+            loadPuertoOptions();
+        } else {
+            const error = await response.text();
+            showNotification('Error: ' + error, 'error');
+        }
+    } catch (error) {
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+function cancelEditPuerto() {
+    const form = document.getElementById('puertoForm');
+    form.reset();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.textContent = 'Agregar Puerto';
+    submitBtn.classList.remove('btn-update');
+    const cancelBtn = form.querySelector('.btn-cancel');
+    if (cancelBtn) cancelBtn.remove();
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const puerto = {
+            nombre: document.getElementById('puertoNombre').value,
+            ubicacion: document.getElementById('puertoUbicacion').value
+        };
+        try {
+            const response = await fetch(`${API_BASE_URL}/Puerto`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(puerto)
+            });
+            if (response.ok) {
+                showNotification('Puerto agregado exitosamente');
+                e.target.reset();
+                loadPuertos();
+            } else {
+                const error = await response.text();
+                showNotification('Error: ' + error, 'error');
+            }
+        } catch (error) {
+            showNotification('Error al agregar puerto: ' + error.message, 'error');
+        }
+    };
+}
+
 // Cargar datos iniciales cuando la página se carga
 window.addEventListener('DOMContentLoaded', () => {
     // Cargar la primera pestaña (clientes)
@@ -848,3 +1157,236 @@ window.addEventListener('DOMContentLoaded', () => {
     loadPuertoOptions();
     loadPlanEntregaOptions();
 });
+
+// ===== FUNCIONES DE EDICIÓN ADICIONALES =====
+
+// Editar Plan de Entrega
+async function editPlanEntrega(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/PlanDeEntrega/${id}`);
+        const plan = await response.json();
+        
+        document.getElementById('planTipoProductoID').value = plan.tipoProductoID;
+        document.getElementById('planCantidad').value = plan.cantidad;
+        document.getElementById('planFechaRegistro').value = plan.fechaRegistro.split('T')[0];
+        document.getElementById('planFechaEntrega').value = plan.fechaEntrega.split('T')[0];
+        document.getElementById('planPrecioEnvio').value = plan.precioEnvio;
+        document.getElementById('planNumeroGuia').value = plan.numeroGuia;
+        document.getElementById('planCedulaCliente').value = plan.clienteCedula;
+        
+        const form = document.getElementById('planEntregaForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = 'Actualizar Plan';
+        submitBtn.classList.add('btn-update');
+        
+        let cancelBtn = form.querySelector('.btn-cancel');
+        if (!cancelBtn) {
+            cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.className = 'btn btn-cancel';
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.onclick = () => cancelEditPlanEntrega();
+            submitBtn.parentNode.appendChild(cancelBtn);
+        }
+        
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            await updatePlanEntrega(id);
+        };
+        
+        form.scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+async function updatePlanEntrega(id) {
+    const plan = {
+        planID: id,
+        tipoProductoID: parseInt(document.getElementById('planTipoProductoID').value),
+        cantidad: parseInt(document.getElementById('planCantidad').value),
+        fechaRegistro: document.getElementById('planFechaRegistro').value,
+        fechaEntrega: document.getElementById('planFechaEntrega').value,
+        precioEnvio: parseFloat(document.getElementById('planPrecioEnvio').value),
+        numeroGuia: parseInt(document.getElementById('planNumeroGuia').value),
+        clienteCedula: document.getElementById('planCedulaCliente').value
+    };
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/PlanDeEntrega/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(plan)
+        });
+        
+        if (response.ok) {
+            showNotification('Plan actualizado exitosamente');
+            cancelEditPlanEntrega();
+            loadPlanesEntrega();
+            loadPlanEntregaOptions();
+        } else {
+            const error = await response.text();
+            showNotification('Error: ' + error, 'error');
+        }
+    } catch (error) {
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+function cancelEditPlanEntrega() {
+    const form = document.getElementById('planEntregaForm');
+    form.reset();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.textContent = 'Agregar Plan';
+    submitBtn.classList.remove('btn-update');
+    const cancelBtn = form.querySelector('.btn-cancel');
+    if (cancelBtn) cancelBtn.remove();
+}
+
+// Editar Envío Terrestre
+async function editEnvioTerrestre(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/EnvioTerrestre/${id}`);
+        const envio = await response.json();
+        
+        document.getElementById('placaVehiculo').value = envio.placaVehiculo;
+        document.getElementById('bodegaEntregaID').value = envio.bodegaEntregaID;
+        document.getElementById('planIDTerrestre').value = envio.planID;
+        
+        const form = document.getElementById('envioTerrestreForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = 'Actualizar Envío';
+        submitBtn.classList.add('btn-update');
+        
+        let cancelBtn = form.querySelector('.btn-cancel');
+        if (!cancelBtn) {
+            cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.className = 'btn btn-cancel';
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.onclick = () => cancelEditEnvioTerrestre();
+            submitBtn.parentNode.appendChild(cancelBtn);
+        }
+        
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            await updateEnvioTerrestre(id);
+        };
+        
+        form.scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+async function updateEnvioTerrestre(id) {
+    const envio = {
+        envioTerrestreID: id,
+        placaVehiculo: document.getElementById('placaVehiculo').value,
+        bodegaEntregaID: parseInt(document.getElementById('bodegaEntregaID').value),
+        planID: parseInt(document.getElementById('planIDTerrestre').value)
+    };
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/EnvioTerrestre/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(envio)
+        });
+        
+        if (response.ok) {
+            showNotification('Envío actualizado exitosamente');
+            cancelEditEnvioTerrestre();
+            loadEnviosTerrestres();
+        } else {
+            const error = await response.text();
+            showNotification('Error: ' + error, 'error');
+        }
+    } catch (error) {
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+function cancelEditEnvioTerrestre() {
+    const form = document.getElementById('envioTerrestreForm');
+    form.reset();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.textContent = 'Agregar Envío';
+    submitBtn.classList.remove('btn-update');
+    const cancelBtn = form.querySelector('.btn-cancel');
+    if (cancelBtn) cancelBtn.remove();
+}
+
+// Editar Envío Marítimo
+async function editEnvioMaritimo(id) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/EnvioMaritimo/${id}`);
+        const envio = await response.json();
+        
+        document.getElementById('numeroFlota').value = envio.numeroFlota;
+        document.getElementById('puertoEntregaID').value = envio.puertoEntregaID;
+        document.getElementById('planIDMaritimo').value = envio.planID;
+        
+        const form = document.getElementById('envioMaritimoForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = 'Actualizar Envío';
+        submitBtn.classList.add('btn-update');
+        
+        let cancelBtn = form.querySelector('.btn-cancel');
+        if (!cancelBtn) {
+            cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.className = 'btn btn-cancel';
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.onclick = () => cancelEditEnvioMaritimo();
+            submitBtn.parentNode.appendChild(cancelBtn);
+        }
+        
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            await updateEnvioMaritimo(id);
+        };
+        
+        form.scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+async function updateEnvioMaritimo(id) {
+    const envio = {
+        envioMaritimoID: id,
+        numeroFlota: document.getElementById('numeroFlota').value,
+        puertoEntregaID: parseInt(document.getElementById('puertoEntregaID').value),
+        planID: parseInt(document.getElementById('planIDMaritimo').value)
+    };
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/EnvioMaritimo/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(envio)
+        });
+        
+        if (response.ok) {
+            showNotification('Envío actualizado exitosamente');
+            cancelEditEnvioMaritimo();
+            loadEnviosMaritimos();
+        } else {
+            const error = await response.text();
+            showNotification('Error: ' + error, 'error');
+        }
+    } catch (error) {
+        showNotification('Error: ' + error.message, 'error');
+    }
+}
+
+function cancelEditEnvioMaritimo() {
+    const form = document.getElementById('envioMaritimoForm');
+    form.reset();
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.textContent = 'Agregar Envío';
+    submitBtn.classList.remove('btn-update');
+    const cancelBtn = form.querySelector('.btn-cancel');
+    if (cancelBtn) cancelBtn.remove();
+}
