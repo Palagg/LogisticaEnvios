@@ -209,6 +209,43 @@ header p {
     background: #c82333;
 }
 
+.btn-edit {
+    background: #28a745;
+    color: white;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    margin-right: 5px;
+}
+
+.btn-edit:hover {
+    background: #218838;
+}
+
+.btn-update {
+    background: #ffc107;
+    color: #333;
+}
+
+.btn-update:hover {
+    background: #e0a800;
+}
+
+.btn-cancel {
+    background: #6c757d;
+    color: white;
+    padding: 12px 25px;
+    margin-left: 10px;
+}
+
+.btn-cancel:hover {
+    background: #5a6268;
+}
+
+.data-item-actions {
+    display: flex;
+    gap: 5px;
+}
+
 .data-list {
     margin-top: 20px;
 }

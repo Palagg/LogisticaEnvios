@@ -73,7 +73,10 @@ async function loadClientes() {
                     <p><strong>Dirección:</strong> ${cliente.direccion || 'N/A'}</p>
                     <p><strong>Email:</strong> ${cliente.email || 'N/A'}</p>
                 </div>
-                <button class="btn btn-danger" onclick="deleteCliente('${cliente.cedula}')">Eliminar</button>
+                <div class="data-item-actions">
+                    <button class="btn btn-edit" onclick="editCliente('${cliente.cedula}')">Editar</button>
+                    <button class="btn btn-danger" onclick="deleteCliente('${cliente.cedula}')">Eliminar</button>
+                </div>
             </div>
         `).join('');
     } catch (error) {
@@ -128,6 +131,120 @@ async function deleteCliente(cedula) {
     } catch (error) {
         showNotification('Error: ' + error.message, 'error');
     }
+}
+
+async function editCliente(cedula) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/Clientes/${cedula}`);
+        const cliente = await response.json();
+        
+        // Llenar el formulario con los datos existentes
+        document.getElementById('clienteCedula').value = cliente.cedula;
+        document.getElementById('clienteCedula').readOnly = true; // No se puede cambiar la cédula
+        document.getElementById('clienteNombre').value = cliente.nombre;
+        document.getElementById('clienteDireccion').value = cliente.direccion || '';
+        document.getElementById('clienteEmail').value = cliente.email || '';
+        
+        // Cambiar el botón de submit
+        const form = document.getElementById('clienteForm');
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.textContent = 'Actualizar Cliente';
+        submitBtn.classList.add('btn-update');
+        
+        // Agregar botón de cancelar
+        let cancelBtn = form.querySelector('.btn-cancel');
+        if (!cancelBtn) {
+            cancelBtn = document.createElement('button');
+            cancelBtn.type = 'button';
+            cancelBtn.className = 'btn btn-cancel';
+            cancelBtn.textContent = 'Cancelar';
+            cancelBtn.onclick = cancelEditCliente;
+            submitBtn.parentNode.appendChild(cancelBtn);
+        }
+        
+        // Cambiar el manejador del formulario
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            await updateCliente(cedula);
+        };
+        
+        // Scroll al formulario
+        form.scrollIntoView({ behavior: 'smooth' });
+    } catch (error) {
+        showNotification('Error al cargar cliente: ' + error.message, 'error');
+    }
+}
+
+async function updateCliente(cedula) {
+    const cliente = {
+        cedula: cedula,
+        nombre: document.getElementById('clienteNombre').value,
+        direccion: document.getElementById('clienteDireccion').value,
+        email: document.getElementById('clienteEmail').value
+    };
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/Clientes/${cedula}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cliente)
+        });
+        
+        if (response.ok) {
+            showNotification('Cliente actualizado exitosamente');
+            cancelEditCliente();
+            loadClientes();
+        } else {
+            const error = await response.text();
+            showNotification('Error: ' + error, 'error');
+        }
+    } catch (error) {
+        showNotification('Error al actualizar cliente: ' + error.message, 'error');
+    }
+}
+
+function cancelEditCliente() {
+    const form = document.getElementById('clienteForm');
+    form.reset();
+    document.getElementById('clienteCedula').readOnly = false;
+    
+    const submitBtn = form.querySelector('button[type="submit"]');
+    submitBtn.textContent = 'Agregar Cliente';
+    submitBtn.classList.remove('btn-update');
+    
+    const cancelBtn = form.querySelector('.btn-cancel');
+    if (cancelBtn) cancelBtn.remove();
+    
+    // Restaurar el manejador original
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        
+        const cliente = {
+            cedula: document.getElementById('clienteCedula').value,
+            nombre: document.getElementById('clienteNombre').value,
+            direccion: document.getElementById('clienteDireccion').value,
+            email: document.getElementById('clienteEmail').value
+        };
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/Clientes`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cliente)
+            });
+            
+            if (response.ok) {
+                showNotification('Cliente agregado exitosamente');
+                e.target.reset();
+                loadClientes();
+            } else {
+                const error = await response.text();
+                showNotification('Error: ' + error, 'error');
+            }
+        } catch (error) {
+            showNotification('Error al agregar cliente: ' + error.message, 'error');
+        }
+    };
 }
 
 // ===== TIPOS DE PRODUCTO =====
