@@ -211,8 +211,101 @@ async function deleteTipoProducto(id) {
     }
 }
 
+// ===== FUNCIONES AUXILIARES PARA CARGAR DROPDOWNS =====
+async function loadTipoProductoOptions() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/TipoProducto`);
+        const tipos = await response.json();
+        
+        const select = document.getElementById('planTipoProductoID');
+        select.innerHTML = '<option value="">Seleccione un tipo de producto</option>';
+        tipos.forEach(tipo => {
+            select.innerHTML += `<option value="${tipo.tipoProductoID}">${tipo.nombre} - ${tipo.descripcion}</option>`;
+        });
+    } catch (error) {
+        console.error('Error cargando tipos de producto:', error);
+    }
+}
+
+async function loadClienteOptions() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/Clientes`);
+        const clientes = await response.json();
+        
+        const select = document.getElementById('planCedulaCliente');
+        select.innerHTML = '<option value="">Seleccione un cliente</option>';
+        clientes.forEach(cliente => {
+            select.innerHTML += `<option value="${cliente.cedula}">${cliente.nombre} (${cliente.cedula})</option>`;
+        });
+    } catch (error) {
+        console.error('Error cargando clientes:', error);
+    }
+}
+
+async function loadBodegaOptions() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/Bodega`);
+        const bodegas = await response.json();
+        
+        const select = document.getElementById('bodegaEntregaID');
+        select.innerHTML = '<option value="">Seleccione una bodega</option>';
+        bodegas.forEach(bodega => {
+            select.innerHTML += `<option value="${bodega.bodegaID}">${bodega.ubicacion} (Capacidad: ${bodega.capacidad})</option>`;
+        });
+    } catch (error) {
+        console.error('Error cargando bodegas:', error);
+    }
+}
+
+async function loadPuertoOptions() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/Puerto`);
+        const puertos = await response.json();
+        
+        const select = document.getElementById('puertoEntregaID');
+        select.innerHTML = '<option value="">Seleccione un puerto</option>';
+        puertos.forEach(puerto => {
+            select.innerHTML += `<option value="${puerto.puertoID}">${puerto.nombre} - ${puerto.ubicacion}</option>`;
+        });
+    } catch (error) {
+        console.error('Error cargando puertos:', error);
+    }
+}
+
+async function loadPlanEntregaOptions() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/PlanDeEntrega`);
+        const text = await response.text();
+        const planes = text ? JSON.parse(text) : [];
+        
+        // Para envíos terrestres
+        const selectTerrestre = document.getElementById('planIDTerrestre');
+        if (selectTerrestre) {
+            selectTerrestre.innerHTML = '<option value="">Seleccione un plan de entrega</option>';
+            planes.forEach(plan => {
+                selectTerrestre.innerHTML += `<option value="${plan.planID}">Plan #${plan.planID} - Guía: ${plan.numeroGuia}</option>`;
+            });
+        }
+        
+        // Para envíos marítimos
+        const selectMaritimo = document.getElementById('planIDMaritimo');
+        if (selectMaritimo) {
+            selectMaritimo.innerHTML = '<option value="">Seleccione un plan de entrega</option>';
+            planes.forEach(plan => {
+                selectMaritimo.innerHTML += `<option value="${plan.planID}">Plan #${plan.planID} - Guía: ${plan.numeroGuia}</option>`;
+            });
+        }
+    } catch (error) {
+        console.error('Error cargando planes de entrega:', error);
+    }
+}
+
 // ===== PLANES DE ENTREGA =====
 async function loadPlanesEntrega() {
+    // Cargar opciones de los dropdowns
+    await loadTipoProductoOptions();
+    await loadClienteOptions();
+    
     try {
         const response = await fetch(`${API_BASE_URL}/PlanDeEntrega`);
         
@@ -304,6 +397,10 @@ async function deletePlanEntrega(id) {
 
 // ===== ENVÍOS TERRESTRES =====
 async function loadEnviosTerrestres() {
+    // Cargar opciones de los dropdowns
+    await loadBodegaOptions();
+    await loadPlanEntregaOptions();
+    
     try {
         const response = await fetch(`${API_BASE_URL}/EnvioTerrestre`);
         
@@ -387,6 +484,10 @@ async function deleteEnvioTerrestre(id) {
 
 // ===== ENVÍOS MARÍTIMOS =====
 async function loadEnviosMaritimos() {
+    // Cargar opciones de los dropdowns
+    await loadPuertoOptions();
+    await loadPlanEntregaOptions();
+    
     try {
         const response = await fetch(`${API_BASE_URL}/EnvioMaritimo`);
         

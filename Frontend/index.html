@@ -96,8 +96,10 @@
                     <h3>Nuevo Plan de Entrega</h3>
                     <form id="planEntregaForm">
                         <div class="form-group">
-                            <label>ID Tipo de Producto:</label>
-                            <input type="number" id="planTipoProductoID" required>
+                            <label>Tipo de Producto:</label>
+                            <select id="planTipoProductoID" required>
+                                <option value="">Seleccione un tipo de producto</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label>Cantidad:</label>
@@ -120,8 +122,10 @@
                             <input type="number" id="planNumeroGuia" required>
                         </div>
                         <div class="form-group">
-                            <label>Cédula del Cliente:</label>
-                            <input type="text" id="planCedulaCliente" required maxlength="15">
+                            <label>Cliente:</label>
+                            <select id="planCedulaCliente" required>
+                                <option value="">Seleccione un cliente</option>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Agregar Plan</button>
                     </form>
@@ -148,12 +152,16 @@
                             <input type="text" id="placaVehiculo" required maxlength="6">
                         </div>
                         <div class="form-group">
-                            <label>ID Bodega de Entrega:</label>
-                            <input type="number" id="bodegaEntregaID" required>
+                            <label>Bodega de Entrega:</label>
+                            <select id="bodegaEntregaID" required>
+                                <option value="">Seleccione una bodega</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label>ID Plan de Entrega:</label>
-                            <input type="number" id="planIDTerrestre" required>
+                            <label>Plan de Entrega:</label>
+                            <select id="planIDTerrestre" required>
+                                <option value="">Seleccione un plan de entrega</option>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Agregar Envío</button>
                     </form>
@@ -180,12 +188,16 @@
                             <input type="text" id="numeroFlota" required maxlength="8">
                         </div>
                         <div class="form-group">
-                            <label>ID Puerto de Entrega:</label>
-                            <input type="number" id="puertoEntregaID" required>
+                            <label>Puerto de Entrega:</label>
+                            <select id="puertoEntregaID" required>
+                                <option value="">Seleccione un puerto</option>
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label>ID Plan de Entrega:</label>
-                            <input type="number" id="planIDMaritimo" required>
+                            <label>Plan de Entrega:</label>
+                            <select id="planIDMaritimo" required>
+                                <option value="">Seleccione un plan de entrega</option>
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Agregar Envío</button>
                     </form>
