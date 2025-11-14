@@ -6,6 +6,7 @@ namespace LogisticaEnvios.Models
     public class EnvioTerrestre
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int EnvioTerrestreID { get; set; }
 
         [Required(ErrorMessage = "Se requiere la placa del vehículo.")]

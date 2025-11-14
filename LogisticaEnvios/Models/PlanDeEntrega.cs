@@ -6,6 +6,7 @@ namespace LogisticaEnvios.Models
     public class PlanDeEntrega
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int PlanID { get; set; }
 
         [ForeignKey("TipoProducto")]

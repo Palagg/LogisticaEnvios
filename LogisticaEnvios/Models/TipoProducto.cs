@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LogisticaEnvios.Models
 {
     public class TipoProducto
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TipoProductoID { get; set; }
 
         [Required(ErrorMessage = "El nombre del tipo de producto es obligatorio.")]

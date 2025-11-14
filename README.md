@@ -463,6 +463,3 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 
 Proyecto desarrollado con fines educativos para el curso de Pruebas y Calidad de Software.
 
----
-
-⭐ Si este proyecto te fue útil, considera darle una estrella en GitHub!

@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace LogisticaEnvios.Models
 {
     public class Bodega
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int BodegaID { get; set; }
 
         [Required(ErrorMessage = "La ubicación de la bodega es obligatoria.")]

@@ -6,6 +6,7 @@ namespace LogisticaEnvios.Models
     public class EnvioMaritimo
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int EnvioMaritimoID { get; set; }
 
         [Required(ErrorMessage = "El numero de la flota es obligatorio.")]
