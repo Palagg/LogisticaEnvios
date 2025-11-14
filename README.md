@@ -60,16 +60,17 @@ cd LogisticaEnvios
 #### Opción A: Usando SQL Server Management Studio (SSMS)
 
 1. Abre SSMS y conéctate a tu instancia de SQL Server
-2. Ejecuta el script de creación de base de datos:
+2. Abre el archivo `database_setup.sql` que se encuentra en la raíz del proyecto
+3. Ejecuta el script completo (incluye creación de tablas y datos de prueba)
+
+**O ejecuta manualmente:**
 
 ```sql
-CREATE DATABASE LogisticaDB;
-GO
-
-USE LogisticaDB;
-GO
-
--- Script de creación de tablas disponible en la documentación del proyecto
+-- El script completo está disponible en database_setup.sql
+-- Incluye:
+-- - Creación de base de datos LogisticaDB
+-- - Creación de 7 tablas (Cliente, TipoProducto, Bodega, Puerto, PlanDeEntrega, EnvioTerrestre, EnvioMaritimo)
+-- - Inserción de datos de prueba para cada tabla
 ```
 
 #### Opción B: Usando Entity Framework Core Migrations
