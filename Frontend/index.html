@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Logística de Envíos</title>
+
+    <!--Content Security Policy para prevenir XSS y scripts no autorizados -->
+    <meta http-equiv="Content-Security-Policy"
+          content="
+          default-src 'self';
+          script-src 'self';
+          style-src 'self';
+          img-src 'self' data:;
+          connect-src https://localhost:7103 http://localhost:8000;
+          object-src 'none';
+          frame-ancestors 'none';
+          ">
+
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>

@@ -167,16 +167,34 @@ La API estará disponible en:
 #### Opción 1: Abrir directamente
 Abre el archivo `Frontend/index.html` en tu navegador
 
-#### Opción 2: Servidor HTTP con Python (Recomendado)
+#### Opción 2: Servidor HTTP con Python y Headers de Seguridad (Recomendado)
+
+Este servidor incluye cabeceras de seguridad requeridas para pasar auditorías OWASP:
+
+```bash
+cd Frontend
+python server.py
+```
+
+Luego abre: `http://localhost:8000`
+
+**Características del servidor:**
+- ✅ Content-Security-Policy (CSP) habilitada
+- ✅ X-Frame-Options: DENY (protección contra ClickJacking)
+- ✅ X-Content-Type-Options: nosniff
+- ✅ X-XSS-Protection habilitada
+- ✅ Referrer-Policy: strict-origin-when-cross-origin
+
+#### Opción 3: Servidor HTTP simple (sin seguridad adicional)
 
 ```bash
 cd Frontend
 python -m http.server 8000
 ```
 
-Luego abre: `http://localhost:8000`
+**Nota:** Esta opción no incluye las cabeceras de seguridad recomendadas. Use **Opción 2** en producción.
 
-#### Opción 3: Live Server (VS Code)
+#### Opción 4: Live Server (VS Code)
 1. Instala la extensión "Live Server" en VS Code
 2. Click derecho en `index.html` → "Open with Live Server"
 
@@ -330,6 +348,47 @@ Content-Type: application/json
 
 Este proyecto está diseñado para pruebas de seguridad en ambientes de desarrollo.
 
+## 🔒 Pruebas de Seguridad
+
+### Medidas de Seguridad Implementadas
+
+#### Backend (ASP.NET Core)
+- ✅ CORS configurado permitiendo solo solicitudes desde localhost
+- ✅ Validación de entrada en controladores
+- ✅ Manejo de excepciones seguro
+
+#### Frontend
+- ✅ **Content-Security-Policy (CSP)** - Previene inyección de scripts
+- ✅ **X-Frame-Options: DENY** - Previene ClickJacking
+- ✅ **X-Content-Type-Options: nosniff** - Previene MIME sniffing
+- ✅ **X-XSS-Protection** - Protección contra XSS en navegadores antiguos
+- ✅ **Referrer-Policy** - Control de información de referencia
+- ✅ **Permissions-Policy** - Restringe acceso a APIs del navegador
+- ✅ **Sin scripts en línea** - Todos los eventos manejados con `addEventListener`
+
+### Ejecutar Escaneo OWASP ZAP
+
+#### Paso 1: Iniciar el servidor de frontend con headers de seguridad
+```bash
+cd Frontend
+python server.py
+```
+
+#### Paso 2: Descargar e instalar OWASP ZAP
+- Descargar de: https://www.zaproxy.org/download/
+- Instalar en tu sistema
+
+#### Paso 3: Ejecutar el escaneo
+1. Abre OWASP ZAP
+2. Selecciona "Automated Scan"
+3. Ingresa la URL: `http://localhost:8000`
+4. Inicia el escaneo
+
+**Resultado esperado:**
+- ✅ Sin alertas críticas
+- ✅ Sin vulnerabilidades de CSP
+- ✅ Sin vulnerabilidades de ClickJacking
+
 ### Vulnerabilidades Conocidas (Para Testing)
 
 ⚠️ **ADVERTENCIA**: Este sistema tiene vulnerabilidades intencionales para fines educativos:
@@ -347,7 +406,10 @@ Este proyecto está diseñado para pruebas de seguridad en ambientes de desarrol
 # Instalar OWASP ZAP
 # Descargar de: https://www.zaproxy.org/download/
 
-# URL objetivo
+# URL objetivo (Frontend con seguridad)
+http://localhost:8000
+
+# URL objetivo (Backend API)
 https://localhost:7103
 ```
 
